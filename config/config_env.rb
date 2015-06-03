@@ -9,7 +9,7 @@ config_env :production do
 end
 
 config_env do
-  set 'SENDGRID_DOMAIN', "credit-card-service-api.herokuapp.com"
-  set 'SENDGRID_USERNAME', "app35856516@heroku.com"
-  set 'SENDGRID_PASSWORD', "s3t2av1i2319"
+  set 'SENDGRID_DOMAIN', "creditcardserviceapp.herokuapp.com"
+  set 'SENDGRID_USERNAME', "app37458399@heroku.com"
+  set 'SENDGRID_PASSWORD', "vr0sw7kd3433"
 end
