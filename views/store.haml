@@ -1,0 +1,28 @@
+%h2 Store Credit Card Information
+%form{:action => '/store', :method => 'post', :id => 'store-form',class: 'form-horizontal'}
+    .form-group
+        %dl
+            %dt
+                %label{:for => 'name'} Name
+            %dd
+                %input{:type => 'text', :name => 'name', :id => 'name_input'}
+    .form-group
+        %dl
+            %dt
+                %label{:for => 'card_number'} Credit Card Number
+            %dd
+                %input{:type => 'text', :name => 'card_number', :id => 'card_number_input'}
+    .form-group
+        %dl
+            %dt
+                %label{:for => 'network'} Credit Card Network
+            %dd
+                %input{:type => 'text', :name => 'network', :id => 'network_input'}
+    .form-group
+        %dl
+            %dt
+                %label{:for => 'expiration'} Expiration Date
+            %dd
+                %input{:type => 'date', :name => 'expiration', :id => 'expiration_input'}
+    .form-group
+        %input{:type => 'submit', :id => 'store-form-submit', :class => 'btn btn-default', :value => 'submit'}
