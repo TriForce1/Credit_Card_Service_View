@@ -8,8 +8,11 @@ require 'email_veracity'
 require 'rack/ssl-enforcer'
 require_relative './model/user'
 require_relative './helpers/creditcard_helper'
+<<<<<<< HEAD
 require 'rack/ssl-enforcer'
 
+=======
+>>>>>>> e24d1eb8ea9ec230b30a3234aa00f4153c63de53
 
 # Credit Card Web Service
 class CreditCardService < Sinatra::Base
@@ -17,6 +20,7 @@ class CreditCardService < Sinatra::Base
 
   enable :logging
 
+<<<<<<< HEAD
 
   configure do
     use Rack::Session::Cookie, secret: ENV['MSG_KEY']
@@ -29,6 +33,8 @@ class CreditCardService < Sinatra::Base
   end
 
 
+=======
+>>>>>>> e24d1eb8ea9ec230b30a3234aa00f4153c63de53
   configure :development, :test do
     require 'hirb'
     Hirb.enable
@@ -190,7 +196,10 @@ class CreditCardService < Sinatra::Base
     haml :validate
   end
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e24d1eb8ea9ec230b30a3234aa00f4153c63de53
   get '/validate/:card_number' do
     # @validate = params[:card_number]
     # puts @validate
