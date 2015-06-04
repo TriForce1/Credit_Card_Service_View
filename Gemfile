@@ -19,16 +19,17 @@ gem 'jwt'
 gem 'email_veracity', '~> 0.6.0'
 
 group :development do
-  gem 'sqlite3'
   gem 'tux'
   gem 'hirb'
 end
 
+group :development, :test do
+  gem 'sqlite3'
+end
+
 group :test do
-  gem 'minitest'
   gem 'rack'
   gem 'rack-test'
-  gem 'rake'
   gem 'sqlite3'
 end
 
