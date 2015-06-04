@@ -5,6 +5,7 @@ require 'json'
 require 'protected_attributes'
 require 'rack-flash'
 require 'email_veracity'
+require 'rack/ssl-enforcer'
 require_relative './model/user'
 require_relative './helpers/creditcard_helper'
 
@@ -14,17 +15,21 @@ class CreditCardService < Sinatra::Base
 
   enable :logging
 
-  configure do
-    use Rack::Session::Cookie, secret: ENV['MSG_KEY']
-    use Rack::Flash, sweep: true
-  end
-
   configure :development, :test do
     require 'hirb'
     Hirb.enable
     ConfigEnv.path_to_config("#{__dir__}/config/config_env.rb")
   end
 
+  configure :production do
+    use Rack::SslEnforcer
+    set :session_secret, ENV['MSG_KEY']
+  end
+
+  configure do
+    use Rack::Session::Cookie, secret: settings.session_secret
+    use Rack::Flash, sweep: true
+  end
 
   before do
     @current_user = session[:auth_token] ? find_user_by_token(session[:auth_token]) : nil
