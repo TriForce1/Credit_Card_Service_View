@@ -13,17 +13,17 @@
 
 ActiveRecord::Schema.define(version: 20150513061413) do
 
-  create_table "users", force: :cascade do |t|
-    t.string   "salt"
-    t.string   "username"
-    t.string   "fullname"
-    t.string   "hashed_password"
-    t.string   "email"
-    t.string   "address"
-    t.string   "nonce"
-    t.string   "dob"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+  create_table 'users', force: :cascade do |t|    
+    t.string   'salt'
+    t.string   'username'
+    t.string   'fullname'
+    t.string   'hashed_password'
+    t.string   'email'
+    t.string   'address'
+    t.string   'nonce'
+    t.string   'dob'
+    t.datetime 'created_at',      null: false
+    t.datetime  'updated_at',      null: false
   end
 
 end

@@ -8,12 +8,26 @@ require 'email_veracity'
 require 'rack/ssl-enforcer'
 require_relative './model/user'
 require_relative './helpers/creditcard_helper'
+require 'rack/ssl-enforcer'
+
 
 # Credit Card Web Service
 class CreditCardService < Sinatra::Base
   include CreditCardHelper
 
   enable :logging
+
+
+  configure do
+    use Rack::Session::Cookie, secret: ENV['MSG_KEY']
+    use Rack::Flash, sweep: true
+  end
+
+  configure :production do
+    use Rack::SslEnforcer
+    set :session_secret, ENV['MSG_KEY']
+  end
+
 
   configure :development, :test do
     require 'hirb'
@@ -175,6 +189,7 @@ class CreditCardService < Sinatra::Base
     # end
     haml :validate
   end
+
 
   get '/validate/:card_number' do
     # @validate = params[:card_number]

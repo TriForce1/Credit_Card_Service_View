@@ -10,7 +10,7 @@ gem 'config_env'
 gem 'rbnacl-libsodium'
 gem 'rack-flash3'
 gem 'pony'
-
+gem 'rack-ssl-enforcer'
 gem 'activerecord'
 gem 'sinatra-activerecord'
 gem 'protected_attributes'
