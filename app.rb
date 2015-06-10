@@ -201,7 +201,7 @@ class CreditCardService < Sinatra::Base
     haml :validate
   end
 
-  get '/profile' do
+  get '/profile', :auth => [:user] do
     if @current_user
       redirect "/user/#{@current_user}"
     end
