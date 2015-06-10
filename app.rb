@@ -9,6 +9,8 @@ require 'rack/ssl-enforcer'
 require_relative './model/user'
 require_relative './helpers/creditcard_helper'
 require 'rack/ssl-enforcer'
+require 'httparty'
+require 'jwt'
 
 
 # Credit Card Web Service
@@ -17,6 +19,8 @@ class CreditCardService < Sinatra::Base
 
   enable :logging
 
+
+  API_BASE_URI = 'http://credit-card-service-api.herokuapp.com/api/v1'
 
   configure do
     use Rack::Session::Cookie, secret: ENV['MSG_KEY']
@@ -82,35 +86,7 @@ class CreditCardService < Sinatra::Base
   #   {"Card" => params[:card_number], "validated" => c.validate_checksum}.to_json
   # end
 
-  # post '/api/v1/credit_card' do
-  #   request_json = request.body.read
-  #   req = JSON.parse(request_json)
-  #   creditcard = CreditCard.new(
-  #     number: req['number'],
-  #     expiration_date: req['expiration_date'],
-  #     owner: req['owner'],
-  #     credit_network: req['credit_network']
-  #   )
-  #
-  #   begin
-  #     unless creditcard.validate_checksum
-  #       halt 400
-  #     else
-  #       creditcard.save
-  #       status 201
-  #     end
-  #   rescue
-  #     halt 410
-  #   end
-  # end
 
-  # get '/api/v1/get' do
-  #   begin
-  #     creditcards = CreditCard.all.to_json
-  #   rescue
-  #     halt 500
-  #   end
-  # end
 
   get '/register' do
     if token = params[:token]
@@ -174,15 +150,7 @@ class CreditCardService < Sinatra::Base
     redirect '/'
   end
 
-  # get '/retrieve' do
-  #   @retrieve = params[:card_number]
-  #   if @retrieve
-  #     redirect "/retrieve"
-  #   end
-  #   haml :retrieve
-  # end
-
-  get '/retrieve', :auth => [:user] do
+  get '/retrieve' do
 
     haml :retrieve
   end
@@ -211,9 +179,26 @@ class CreditCardService < Sinatra::Base
     haml :validate
   end
 
-  get '/store', :auth => [:user] do
+  get '/store' do
+
     haml :store
   end
+
+  post '/store' do
+    url = "#{API_BASE_URI}/credit_card"
+    body = {
+        name: params[:name],
+        user_id: @current_user.id,
+        card_number: params[:card_number],
+        network: params[:network],
+        expiration: params[:expiration],
+    }
+    headers = {'authorization' => ('Bearer ' + user_jwt)
+    HTTParty.post url, body: body_json, headers: headers
+    flash[:notice] = "Credit card information sent"
+    haml :store
+  end
+
 
   get '/user/:username' do
     username = params[:username]
