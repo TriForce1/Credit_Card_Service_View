@@ -45,6 +45,17 @@ class CreditCardService < Sinatra::Base
     use Rack::Flash, sweep: true
   end
 
+  register do
+    def auth(*types)
+      condition do
+        if (types.include? :user) && !@ucrrent_user
+          flash[:error] = "You must be logged in to access this page"
+          redirect "/login"
+        end
+      end
+    end
+  end
+
   before do
     @current_user = session[:auth_token] ? find_user_by_token(session[:auth_token]) : nil
   end
@@ -171,18 +182,18 @@ class CreditCardService < Sinatra::Base
   #   haml :retrieve
   # end
 
-  get '/retrieve' do
+  get '/retrieve', :auth => [:user] do
 
     haml :retrieve
   end
 
-  get '/retrieve/all' do
+  get '/retrieve/all', :auth => [:user] do
     # status, headers, body = call env.merge("PATH_INFO" => '/api/v1/get')
     # @cards = JSON.parse(body[0])
     haml :retrieve
   end
 
-  get '/validate' do
+  get '/validate', :auth => [:user] do
     # @validate = params[:card_number]
     # if @validate
     #   redirect "/validate/#{@validate}"
@@ -190,8 +201,14 @@ class CreditCardService < Sinatra::Base
     haml :validate
   end
 
+  get '/profile' do
+    if @current_user
+      redirect "/user/#{@current_user}"
+    end
+    haml :index
+  end
 
-  get '/validate/:card_number' do
+  get '/validate/:card_number', :auth => [:user] do
     # @validate = params[:card_number]
     # puts @validate
     # status, headers, body = call env.merge("PATH_INFO" => "/api/v1/credit_card/validate/#{@validate}")
@@ -201,7 +218,16 @@ class CreditCardService < Sinatra::Base
     haml :validate
   end
 
-  get '/store' do
+  get '/store', :auth => [:user] do
     haml :store
+  end
+
+  get 'user/:username', :auth => [:user] do
+    username = params[:username]
+    unless username == @current_user.username
+      flash[:error] = "You may only look at your own profile"
+      redirect '/'
+    end
+    haml :profile
   end
 end
