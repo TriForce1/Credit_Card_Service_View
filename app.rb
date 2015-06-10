@@ -199,12 +199,7 @@ class CreditCardService < Sinatra::Base
     #   redirect "/validate/#{@validate}"
     # end
     haml :validate
-  end
-
-  get '/profile', :auth => [:user] do
-      redirect "/user/#{@current_user}"
-    haml :index
-  end
+  end  
 
   get '/validate/:card_number', :auth => [:user] do
     # @validate = params[:card_number]
