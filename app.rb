@@ -52,7 +52,7 @@ class CreditCardService < Sinatra::Base
   register do
     def auth(*types)
       condition do
-        if (types.include? :user) && !@ucrrent_user
+        if (types.include? :user) && !@current_user
           flash[:error] = "You must be logged in to access this page"
           redirect "/login"
         end
