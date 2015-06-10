@@ -193,7 +193,7 @@ class CreditCardService < Sinatra::Base
         network: params[:network],
         expiration: params[:expiration],
     }
-    headers = {'authorization' => ('Bearer ' + user_jwt)
+    headers = {'authorization' => ('Bearer ' + user_jwt) }
     HTTParty.post url, body: body_json, headers: headers
     flash[:notice] = "Credit card information sent"
     haml :store
