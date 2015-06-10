@@ -6,6 +6,7 @@ require 'base64'
 require_relative '../model/user'
 
 module CreditCardHelper
+  API_URL ='https://creditcard-api.herokuapp.com/api/v1'
   class Registration
     attr_accessor :username, :email, :password, :dob, :fullname, :address
 
@@ -27,6 +28,13 @@ module CreditCardHelper
       (dob && dob.length > 0) &&
       (fullname && fullname.length > 0)
     end
+  end
+
+  def user_jwt
+    jwt_payload = {'iss' => 'http://creditcardservice.herokuapp.com',
+                    'sub => '@curent_user.id}
+    jwt_key = OpenSSL::PKey::RSA.new(ENV['UI_PRIVATE_KEY'])
+    JWT.encode jwt_payload, jwt_key, 'RS256'
   end
 
   def login_user(user)

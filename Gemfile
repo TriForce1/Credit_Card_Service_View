@@ -18,11 +18,8 @@ gem 'haml'
 gem 'jwt'
 gem 'email_veracity', '~> 0.6.0'
 gem 'rack-ssl-enforcer'
-
-group :development do
-  gem 'tux'
-  gem 'hirb'
-end
+gem 'tux'
+gem 'hirb'
 
 group :development, :test do
   gem 'sqlite3'
