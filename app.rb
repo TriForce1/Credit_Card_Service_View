@@ -150,7 +150,7 @@ class CreditCardService < Sinatra::Base
     redirect '/'
   end
 
-  get '/retrieve' do
+  get '/retrieve' , :auth => [:user] do
 
     haml :retrieve
   end
@@ -184,7 +184,7 @@ class CreditCardService < Sinatra::Base
     haml :store
   end
 
-  post '/store' do
+  post '/store' , :auth => [:user] do
     url = "#{API_BASE_URI}/credit_card"
     body_json = {
         owner: params[:name],
