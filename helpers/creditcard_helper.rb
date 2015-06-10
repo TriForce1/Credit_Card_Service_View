@@ -30,6 +30,7 @@ module CreditCardHelper
       (fullname && fullname.length > 0)
     end
   end
+  
 
   def user_jwt
     jwt_payload = {'iss' => 'http://creditcardserviceapp.herokuapp.com',
