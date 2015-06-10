@@ -187,11 +187,11 @@ class CreditCardService < Sinatra::Base
   post '/store' do
     url = "#{API_BASE_URI}/credit_card"
     body_json = {
-        name: params[:name],
+        owner: params[:name],
         user_id: @current_user.id,
-        card_number: params[:card_number],
-        network: params[:network],
-        expiration: params[:expiration],
+        number: params[:card_number],
+        credit_network: params[:network],
+        expiration_date: params[:expiration],
     }.to_json
     headers = {'authorization' => ('Bearer ' + user_jwt) }
     HTTParty.post url, body: body_json, headers: headers
