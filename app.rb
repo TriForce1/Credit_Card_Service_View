@@ -194,6 +194,7 @@ class CreditCardService < Sinatra::Base
         expiration_date: params[:expiration],
     }.to_json
     headers = {'authorization' => ('Bearer ' + user_jwt) }
+    puts user_jwt
     HTTParty.post url, body: body_json, headers: headers
     flash[:notice] = "Credit card information sent"
     haml :store
