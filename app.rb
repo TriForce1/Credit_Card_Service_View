@@ -215,7 +215,7 @@ class CreditCardService < Sinatra::Base
     haml :store
   end
 
-  get '/user/:username', :auth => [:user] do
+  get '/user/:username' do
     username = params[:username]
     unless username == @current_user.username
       flash[:error] = "You may only look at your own profile"
