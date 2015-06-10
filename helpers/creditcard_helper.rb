@@ -4,6 +4,7 @@ require 'rbnacl/libsodium'
 require 'pony'
 require 'base64'
 require_relative '../model/user'
+require 'openssl'
 
 module CreditCardHelper
   API_URL ='https://creditcard-api.herokuapp.com/api/v1'

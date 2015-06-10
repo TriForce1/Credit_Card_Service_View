@@ -11,6 +11,8 @@ require_relative './helpers/creditcard_helper'
 require 'rack/ssl-enforcer'
 require 'httparty'
 require 'jwt'
+require 'rbnacl/libsodium'
+require 'openssl'
 
 
 # Credit Card Web Service
@@ -185,7 +187,7 @@ class CreditCardService < Sinatra::Base
   end
 
   post '/store' , :auth => [:user] do
-    puts 'started"'
+    puts 'started'
     url = "#{API_BASE_URI}/credit_card"
     body_json = {
         owner: params[:name],
