@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gem 'json'
 gem 'minitest'
-gem 'openssl'
+
 gem 'sinatra'
 gem 'thin'
 gem 'rake'
