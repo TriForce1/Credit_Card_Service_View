@@ -19,14 +19,13 @@
               %li
                 %a{href: '/logout' ,style: "text-decoration: underline;"} Logout?
               %li
-                %a{href: '/profile'} Profile
+                %a{href: "/user/#{@current_user.username}"} Profile
             - else
               %li
                 %a{href: '/login'} Login
               %li
                 %a{href: '/register'} Register
-              %li
-                %a{href: '/profile'} Profile
+
     .container
       .page-header
         %h1
