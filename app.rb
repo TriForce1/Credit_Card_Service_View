@@ -199,7 +199,7 @@ class CreditCardService < Sinatra::Base
     #   redirect "/validate/#{@validate}"
     # end
     haml :validate
-  end  
+  end
 
   get '/validate/:card_number', :auth => [:user] do
     # @validate = params[:card_number]
@@ -215,7 +215,7 @@ class CreditCardService < Sinatra::Base
     haml :store
   end
 
-  get 'user/:username', :auth => [:user] do
+  get '/user/:username', :auth => [:user] do
     username = params[:username]
     unless username == @current_user.username
       flash[:error] = "You may only look at your own profile"
