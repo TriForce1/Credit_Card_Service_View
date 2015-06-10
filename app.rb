@@ -202,7 +202,6 @@ class CreditCardService < Sinatra::Base
   end
 
   get '/profile', :auth => [:user] do
-    if @current_user
       redirect "/user/#{@current_user}"
     end
     haml :index
