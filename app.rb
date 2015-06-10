@@ -203,7 +203,6 @@ class CreditCardService < Sinatra::Base
 
   get '/profile', :auth => [:user] do
       redirect "/user/#{@current_user}"
-    end
     haml :index
   end
 
