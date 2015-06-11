@@ -4,8 +4,10 @@ require 'rbnacl/libsodium'
 require 'pony'
 require 'base64'
 require_relative '../model/user'
+require 'openssl'
 
 module CreditCardHelper
+  
   class Registration
     attr_accessor :username, :email, :password, :dob, :fullname, :address
 
@@ -27,6 +29,14 @@ module CreditCardHelper
       (dob && dob.length > 0) &&
       (fullname && fullname.length > 0)
     end
+  end
+
+
+  def user_jwt
+    jwt_payload = {'iss' => 'http://creditcardserviceapp.herokuapp.com',
+                    'sub' => @current_user.id }
+    jwt_key = OpenSSL::PKey::RSA.new(Base64.urlsafe_decode64(ENV['UI_PRIVATE_KEY']))
+    JWT.encode jwt_payload, jwt_key, 'RS256'
   end
 
   def login_user(user)

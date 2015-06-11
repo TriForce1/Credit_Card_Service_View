@@ -18,11 +18,14 @@
                 = " Welcome #{@current_user.username}, "
               %li
                 %a{href: '/logout' ,style: "text-decoration: underline;"} Logout?
+              %li
+                %a{href: "/user/#{@current_user.username}"} Profile
             - else
               %li
                 %a{href: '/login'} Login
               %li
                 %a{href: '/register'} Register
+
     .container
       .page-header
         %h1

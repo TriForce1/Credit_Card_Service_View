@@ -9,29 +9,30 @@ require 'rack/ssl-enforcer'
 require_relative './model/user'
 require_relative './helpers/creditcard_helper'
 require 'rack/ssl-enforcer'
+require 'httparty'
+require 'jwt'
+require 'rbnacl/libsodium'
+require 'openssl'
+require 'hirb'
+
 
 
 # Credit Card Web Service
 class CreditCardService < Sinatra::Base
+  API_URL_BASE = 'http://creditcard-api.herokuapp.com'
+  # API_URL_BASE = 'http://credit-card-service-api.herokuapp.com'
+
   include CreditCardHelper
 
   enable :logging
 
-
   configure do
     use Rack::Session::Cookie, secret: ENV['MSG_KEY']
     use Rack::Flash, sweep: true
+    Hirb.enable
   end
-
-  configure :production do
-    use Rack::SslEnforcer
-    set :session_secret, ENV['MSG_KEY']
-  end
-
 
   configure :development, :test do
-    require 'hirb'
-    Hirb.enable
     ConfigEnv.path_to_config("#{__dir__}/config/config_env.rb")
   end
 
@@ -40,66 +41,36 @@ class CreditCardService < Sinatra::Base
     set :session_secret, ENV['MSG_KEY']
   end
 
-  configure do
-    use Rack::Session::Cookie, secret: settings.session_secret
-    use Rack::Flash, sweep: true
+  register do
+    def auth(*types)
+      condition do
+        if (types.include? :user) && !@current_user
+          flash[:error] = "You must be logged in to access this page"
+          redirect "/login"
+        end
+      end
+    end
   end
+
 
   before do
     @current_user = session[:auth_token] ? find_user_by_token(session[:auth_token]) : nil
   end
 
-  get '/' do
-    # 'The CreditCardAPI is up and running!'
-    haml :index
+  register do
+    def auth(*types)
+      condition do
+        if (types.include? :user) && !@current_user
+          flash[:error] = 'You must be logged in for that page'
+          redirect '/login'
+        end
+      end
+    end
   end
 
-  # get '/api/v1/credit_card/validate/:card_number' do
-  #   c = CreditCard.new(
-  #     number: params[:card_number]
-  #   )
-  #
-  #   # Method to convert string to integer
-  #   # Returns false if string is not only digits
-  #   result = Integer(params[:card_number]) rescue false
-  #
-  #   # Validate for string length and correct type
-  #   if result == false || params[:card_number].length < 2
-  #     return { "Card" => params[:card_number], "validated" => "false" }.to_json
-  #   end
-  #
-  #   {"Card" => params[:card_number], "validated" => c.validate_checksum}.to_json
-  # end
-
-  # post '/api/v1/credit_card' do
-  #   request_json = request.body.read
-  #   req = JSON.parse(request_json)
-  #   creditcard = CreditCard.new(
-  #     number: req['number'],
-  #     expiration_date: req['expiration_date'],
-  #     owner: req['owner'],
-  #     credit_network: req['credit_network']
-  #   )
-  #
-  #   begin
-  #     unless creditcard.validate_checksum
-  #       halt 400
-  #     else
-  #       creditcard.save
-  #       status 201
-  #     end
-  #   rescue
-  #     halt 410
-  #   end
-  # end
-
-  # get '/api/v1/get' do
-  #   begin
-  #     creditcards = CreditCard.all.to_json
-  #   rescue
-  #     halt 500
-  #   end
-  # end
+  get '/' do
+    haml :index
+  end
 
   get '/register' do
     if token = params[:token]
@@ -145,6 +116,8 @@ class CreditCardService < Sinatra::Base
     haml :login
   end
 
+
+
   post '/login' do
     username = params[:username]
     password = params[:password]
@@ -163,45 +136,60 @@ class CreditCardService < Sinatra::Base
     redirect '/'
   end
 
-  # get '/retrieve' do
-  #   @retrieve = params[:card_number]
-  #   if @retrieve
-  #     redirect "/retrieve"
-  #   end
-  #   haml :retrieve
-  # end
 
-  get '/retrieve' do
-
-    haml :retrieve
+  get '/validate', :auth => [:user] do
+    haml :validate
   end
 
-  get '/retrieve/all' do
-    # status, headers, body = call env.merge("PATH_INFO" => '/api/v1/get')
-    # @cards = JSON.parse(body[0])
-    haml :retrieve
-  end
-
-  get '/validate' do
-    # @validate = params[:card_number]
-    # if @validate
-    #   redirect "/validate/#{@validate}"
-    # end
+  get '/validate/card', :auth => [:user] do
+    num = params['card_number']
+    url = "#{API_URL_BASE}/api/v1/credit_card/validate/#{num}"
+    @card = HTTParty.get (url)
+    @valid = JSON.parse(@card)
     haml :validate
   end
 
 
-  get '/validate/:card_number' do
-    # @validate = params[:card_number]
-    # puts @validate
-    # status, headers, body = call env.merge("PATH_INFO" => "/api/v1/credit_card/validate/#{@validate}")
-    # puts headers
-    # puts status
-    # @body =  JSON.parse(body[0])
-    haml :validate
+  get '/retrieve', :auth => [:user] do
+    result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card/#{@current_user.id}")
+    @cards = result.parsed_response
+    haml :retrieve
   end
 
-  get '/store' do
+  get '/user/:username' , :auth => [:user] do
+    username = params[:username]
+    unless username == @current_user.username
+      flash[:error] = "You may only look at your own profile"
+      redirect '/'
+    end
+    haml :profile
+  end
+
+  get '/store', :auth => [:user] do
     haml :store
+  end
+
+  post '/store' do
+    begin
+      data = {
+        'user_id'           => @current_user.id,
+        'number'            => params[:card_number],
+        'expiration_date'   => params[:expiration],
+        'owner'             => params[:name],
+        'credit_network'    => params[:network]
+      }.to_json
+
+      response = HTTParty.post("#{API_URL_BASE}/api/v1/credit_card", {
+        :body     => data,
+        :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)}
+        })
+      unless response.code == 201
+        flash[:error] = "Invalid Card number"
+        redirect '/store'
+      end
+    end
+    flash[:notice] = "Card saved successfully!"
+    redirect '/'
+
   end
 end
