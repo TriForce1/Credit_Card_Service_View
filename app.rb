@@ -178,7 +178,7 @@ class CreditCardService < Sinatra::Base
     headers = {'authorization' => ('Bearer ' + user_jwt) }
     puts user_jwt
     HTTParty.post url, body: body_json, headers: headers
-    flash[:notice] = "Credit card information sent"
+    flash[:notice] = "Credit card information saved!"
     haml :store
   end
 
