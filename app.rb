@@ -171,7 +171,7 @@ class CreditCardService < Sinatra::Base
     haml :validate
   end
 
-  get '/validate/:card_number', :auth => [:user] do
+  get '/validate?card_number', :auth => [:user] do
     url = "#{API_BASE_URI}/credit_card/validate/#{params['card_number']}"
     @card = HTTParty.get (url)
     @cards = JSON.parse(@card)
