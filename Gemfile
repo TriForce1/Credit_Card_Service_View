@@ -18,6 +18,7 @@ gem 'haml'
 gem 'jwt'
 gem 'email_veracity', '~> 0.6.0'
 gem 'rack-ssl-enforcer'
+gem 'httparty'
 
 group :development do
   gem 'tux'

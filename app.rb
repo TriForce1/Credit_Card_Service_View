@@ -9,10 +9,12 @@ require 'rack/ssl-enforcer'
 require_relative './model/user'
 require_relative './helpers/creditcard_helper'
 require 'rack/ssl-enforcer'
-
+require 'httparty'
 
 # Credit Card Web Service
 class CreditCardService < Sinatra::Base
+  API_URL_BASE = 'http://creditcard-api.herokuapp.com'
+
   include CreditCardHelper
 
   enable :logging
@@ -47,6 +49,17 @@ class CreditCardService < Sinatra::Base
 
   before do
     @current_user = session[:auth_token] ? find_user_by_token(session[:auth_token]) : nil
+  end
+
+  register do
+    def auth(*types)
+      condition do
+        if (types.include? :user) && !@current_user
+          flash[:error] = 'You must be logged in for that page'
+          redirect '/login'
+        end
+      end
+    end
   end
 
   get '/' do
@@ -171,18 +184,19 @@ class CreditCardService < Sinatra::Base
   #   haml :retrieve
   # end
 
-  get '/retrieve' do
-
+  get '/retrieve', :auth => [:user] do
+    result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card/#{@current_user.id}")
+    @cards = result.parsed_response
     haml :retrieve
   end
 
-  get '/retrieve/all' do
-    # status, headers, body = call env.merge("PATH_INFO" => '/api/v1/get')
-    # @cards = JSON.parse(body[0])
-    haml :retrieve
-  end
+  # get '/retrieve/all' do
+  #   # status, headers, body = call env.merge("PATH_INFO" => '/api/v1/get')
+  #   # @cards = JSON.parse(body[0])
+  #   haml :retrieve
+  # end
 
-  get '/validate' do
+  get '/validate', :auth => [:user] do
     # @validate = params[:card_number]
     # if @validate
     #   redirect "/validate/#{@validate}"
@@ -201,7 +215,25 @@ class CreditCardService < Sinatra::Base
     haml :validate
   end
 
-  get '/store' do
+  get '/store', :auth => [:user] do
     haml :store
+  end
+
+  post '/store' do
+    data = {
+      'user_id'           => @current_user.id,
+      'number'            => params[:card_number],
+      'expiration_date'   => params[:expiration],
+      'owner'             => params[:name],
+      'credit_network'    => params[:network]
+    }.to_json
+
+    HTTParty.post("#{API_URL_BASE}/api/v1/credit_card", {
+      :body     => data,
+      :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+      })
+
+    flash[:notice] = "The new credit card has been successfully created."
+    redirect '/'
   end
 end
