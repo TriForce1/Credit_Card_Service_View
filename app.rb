@@ -19,8 +19,8 @@ require 'hirb'
 
 # Credit Card Web Service
 class CreditCardService < Sinatra::Base
-  # API_URL_BASE = 'http://creditcard-api.herokuapp.com'
-  API_URL_BASE = 'http://credit-card-service-api.herokuapp.com'
+  API_URL_BASE = 'http://creditcard-api.herokuapp.com'
+  # API_URL_BASE = 'http://credit-card-service-api.herokuapp.com'
 
   include CreditCardHelper
 
@@ -184,7 +184,7 @@ class CreditCardService < Sinatra::Base
         :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)}
         })
       unless response.code == 201
-        flash[:notice] = "Invalid Card number"
+        flash[:error] = "Invalid Card number"
         redirect '/store'
       end
     end
