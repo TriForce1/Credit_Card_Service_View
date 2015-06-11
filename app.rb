@@ -16,14 +16,14 @@ require 'openssl'
 require 'hirb'
 
 
+
 # Credit Card Web Service
 class CreditCardService < Sinatra::Base
+  API_URL_BASE = 'http://creditcard-api.herokuapp.com'
+
   include CreditCardHelper
 
   enable :logging
-
-
-  API_BASE_URI = 'http://credit-card-service-api.herokuapp.com/api/v1'
 
   configure do
     use Rack::Session::Cookie, secret: ENV['MSG_KEY']
@@ -55,10 +55,21 @@ class CreditCardService < Sinatra::Base
     @current_user = session[:auth_token] ? find_user_by_token(session[:auth_token]) : nil
   end
 
+  register do
+    def auth(*types)
+      condition do
+        if (types.include? :user) && !@current_user
+          flash[:error] = 'You must be logged in for that page'
+          redirect '/login'
+        end
+      end
+    end
+  end
+
   get '/' do
     haml :index
   end
-  
+
   get '/register' do
     if token = params[:token]
       begin
@@ -121,12 +132,6 @@ class CreditCardService < Sinatra::Base
     redirect '/'
   end
 
-  get '/retrieve' , :auth => [:user] do
-      url = "#{API_BASE_URI}/credit_card/#{@current_user.id}"
-      @card = HTTParty.get (url)
-      @cards = JSON.parse(@card)
-    haml :retrieve
-  end
 
   get '/validate', :auth => [:user] do
     haml :validate
@@ -134,31 +139,33 @@ class CreditCardService < Sinatra::Base
 
   get '/validate/card', :auth => [:user] do
     num = params['card_number']
-    url = "#{API_BASE_URI}/credit_card/validate/#{num}"
+    url = "#{API_URL_BASE}api/v1/credit_card/validate/#{num}"
     @card = HTTParty.get (url)
     @valid = JSON.parse(@card)
-    haml :validate
   end
 
-  get '/store' , :auth => [:user] do
-    haml :store
+
+  get '/retrieve', :auth => [:user] do
+    result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card/#{@current_user.id}")
+    @cards = result.parsed_response
+    haml :retrieve
   end
 
-  post '/store' , :auth => [:user] do
-    url = "#{API_BASE_URI}/credit_card"
-    body_json = {
-        owner: params[:name],
-        user_id: @current_user.id,
-        number: params[:card_number],
-        credit_network: params[:network],
-        expiration_date: params[:expiration],
-    }.to_json
-    headers = {'authorization' => ('Bearer ' + user_jwt) }
-    puts user_jwt
-    HTTParty.post url, body: body_json, headers: headers
-    flash[:notice] = "Credit card information saved!"
-    haml :store
-  end
+  # post '/store' , :auth => [:user] do
+  #   url = "#{API_URL_BASE}api/v1/credit_card"
+  #   body_json = {
+  #       owner: params[:name],
+  #       user_id: @current_user.id,
+  #       number: params[:card_number],
+  #       credit_network: params[:network],
+  #       expiration_date: params[:expiration],
+  #   }.to_json
+  #   headers = {'authorization' => ('Bearer ' + user_jwt) }
+  #   puts user_jwt
+  #   HTTParty.post url, body: body_json, headers: headers
+  #   flash[:notice] = "Credit card information saved!"
+  #   haml :store
+  # end
 
   get '/user/:username' , :auth => [:user] do
     username = params[:username]
@@ -167,5 +174,28 @@ class CreditCardService < Sinatra::Base
       redirect '/'
     end
     haml :profile
+  end
+
+  get '/store', :auth => [:user] do
+    haml :store
+  end
+
+  post '/store' do
+    data = {
+      'user_id'           => @current_user.id,
+      'number'            => params[:card_number],
+      'expiration_date'   => params[:expiration],
+      'owner'             => params[:name],
+      'credit_network'    => params[:network]
+    }.to_json
+
+    HTTParty.post("#{API_URL_BASE}/api/v1/credit_card", {
+      :body     => data,
+      :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)}
+      })
+
+    flash[:notice] = "The new credit card has been successfully created."
+    redirect '/'
+
   end
 end

@@ -36,6 +36,10 @@ GEM
     mime-types (2.6.1)
     minitest (5.7.0)
     multi_xml (0.5.5)
+<<<<<<< HEAD
+=======
+    openssl (1.0.0.beta)
+>>>>>>> 4b63ebbe51539ef98c673948a10487ec2be0cdf1
     pg (0.18.2)
     pony (1.11)
       mail (>= 2.0)

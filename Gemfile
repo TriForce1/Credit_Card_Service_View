@@ -2,7 +2,6 @@ source 'http://rubygems.org'
 
 gem 'json'
 gem 'minitest'
-
 gem 'sinatra'
 gem 'thin'
 gem 'rake'
