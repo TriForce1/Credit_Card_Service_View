@@ -13,6 +13,7 @@ require 'httparty'
 require 'jwt'
 require 'rbnacl/libsodium'
 require 'openssl'
+require 'hirb'
 
 
 # Credit Card Web Service
@@ -27,22 +28,16 @@ class CreditCardService < Sinatra::Base
   configure do
     use Rack::Session::Cookie, secret: ENV['MSG_KEY']
     use Rack::Flash, sweep: true
+    Hirb.enable
   end
 
-  configure do
-    require 'hirb'
-    Hirb.enable
+  configure :development, :test do
     ConfigEnv.path_to_config("#{__dir__}/config/config_env.rb")
   end
 
   configure :production do
     use Rack::SslEnforcer
     set :session_secret, ENV['MSG_KEY']
-  end
-
-  configure do
-    use Rack::Session::Cookie, secret: settings.session_secret
-    use Rack::Flash, sweep: true
   end
 
   register do
@@ -61,7 +56,6 @@ class CreditCardService < Sinatra::Base
   end
 
   get '/' do
-    # 'The CreditCardAPI is up and running!'
     haml :index
   end
 
@@ -129,27 +123,15 @@ class CreditCardService < Sinatra::Base
   end
 
   get '/retrieve' , :auth => [:user] do
-
-
       url = "#{API_BASE_URI}/credit_card/#{@current_user.id}"
       @card = HTTParty.get (url)
       @cards = JSON.parse(@card)
-
-
     haml :retrieve
   end
 
-  get '/retrieve/all', :auth => [:user] do
-    # status, headers, body = call env.merge("PATH_INFO" => '/api/v1/get')
-    # @cards = JSON.parse(body[0])
-    haml :retrieve
-  end
+
 
   get '/validate', :auth => [:user] do
-    # @validate = params[:card_number]
-    # if @validate
-    #   redirect "/validate/#{@validate}"
-    # end
     haml :validate
   end
 
@@ -162,7 +144,6 @@ class CreditCardService < Sinatra::Base
   end
 
   get '/store' , :auth => [:user] do
-
     haml :store
   end
 
