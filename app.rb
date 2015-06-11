@@ -49,6 +49,17 @@ class CreditCardService < Sinatra::Base
     @current_user = session[:auth_token] ? find_user_by_token(session[:auth_token]) : nil
   end
 
+  register do
+    def auth(*types)
+      condition do
+        if (types.include? :user) && !@current_user
+          flash[:error] = 'You must be logged in for that page'
+          redirect '/login'
+        end
+      end
+    end
+  end
+
   get '/' do
     # 'The CreditCardAPI is up and running!'
     haml :index
@@ -171,7 +182,7 @@ class CreditCardService < Sinatra::Base
   #   haml :retrieve
   # end
 
-  get '/retrieve' do
+  get '/retrieve', :auth => [:user] do
 
     haml :retrieve
   end
@@ -182,7 +193,7 @@ class CreditCardService < Sinatra::Base
     haml :retrieve
   end
 
-  get '/validate' do
+  get '/validate', :auth => [:user] do
     # @validate = params[:card_number]
     # if @validate
     #   redirect "/validate/#{@validate}"
@@ -201,7 +212,9 @@ class CreditCardService < Sinatra::Base
     haml :validate
   end
 
-  get '/store' do
+  get '/store', :auth => [:user] do
     haml :store
   end
+
+
 end
