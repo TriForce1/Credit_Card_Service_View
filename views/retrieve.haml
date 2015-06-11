@@ -1,23 +1,22 @@
 %h2 Retrieving Credit Card Info
 %p
   Click button below to view all credit cards
-%p
 -if @cards
   = @cards
-  %table{class: 'center', :border => '1'}    
-      %tbody
+  %table{class: 'center', :border => '1'}
+    %tbody
+      %tr
+        %th Owner's Name
+        %th Expiration Date
+        %th Number
+        %th Credit Card Network
+      -@cards.each do |card|
         %tr
-          %th Owner's Name
-          %th Expiration Date
-          %th Number
-          %th Credit Card Network
-        -@cards.each do |card|
-          %tr
-            %td
-              = card['owner']
-            %td
-              = card['expiration_date']
-            %td
-              = card['encrypted_number']
-            %td
-              = card['credit_network']
+          %td
+            = card['owner']
+          %td
+            = card['expiration_date']
+          %td
+            = card['encrypted_number']
+          %td
+            = card['credit_network']
