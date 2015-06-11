@@ -152,22 +152,6 @@ class CreditCardService < Sinatra::Base
     haml :retrieve
   end
 
-  # post '/store' , :auth => [:user] do
-  #   url = "#{API_URL_BASE}api/v1/credit_card"
-  #   body_json = {
-  #       owner: params[:name],
-  #       user_id: @current_user.id,
-  #       number: params[:card_number],
-  #       credit_network: params[:network],
-  #       expiration_date: params[:expiration],
-  #   }.to_json
-  #   headers = {'authorization' => ('Bearer ' + user_jwt) }
-  #   puts user_jwt
-  #   HTTParty.post url, body: body_json, headers: headers
-  #   flash[:notice] = "Credit card information saved!"
-  #   haml :store
-  # end
-
   get '/user/:username' , :auth => [:user] do
     username = params[:username]
     unless username == @current_user.username
