@@ -29,13 +29,7 @@ class CreditCardService < Sinatra::Base
     use Rack::Flash, sweep: true
   end
 
-  configure :production do
-    use Rack::SslEnforcer
-    set :session_secret, ENV['MSG_KEY']
-  end
-
-
-  configure :development, :test do
+  configure do
     require 'hirb'
     Hirb.enable
     ConfigEnv.path_to_config("#{__dir__}/config/config_env.rb")
@@ -187,7 +181,7 @@ class CreditCardService < Sinatra::Base
   end
 
   post '/store' , :auth => [:user] do
-    url = "#{API_BASE_URI}/credit_card"  
+    url = "#{API_BASE_URI}/credit_card"
     body_json = {
         owner: params[:name],
         user_id: @current_user.id,
