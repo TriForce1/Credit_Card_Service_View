@@ -9,7 +9,7 @@ require 'rack/ssl-enforcer'
 require_relative './model/user'
 require_relative './helpers/creditcard_helper'
 require 'rack/ssl-enforcer'
-
+require 'httparty'
 
 # Credit Card Web Service
 class CreditCardService < Sinatra::Base
@@ -216,5 +216,21 @@ class CreditCardService < Sinatra::Base
     haml :store
   end
 
+  post '/store' do
+    data = {
+      'user_id'           => @current_user.id,
+      'number'            => params[:card_number],
+      'expiration_date'   => params[:expiration],
+      'owner'             => params[:name],
+      'credit_network'    => params[:network]
+    }.to_json
 
+    HTTParty.post("http://localhost:9292/api/v1/credit_card", {
+      :body     => data,
+      :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+      })
+
+    flash[:notice] = "The new credit card has been successfully created."
+    redirect '/'
+  end
 end
