@@ -2,7 +2,6 @@ source 'http://rubygems.org'
 
 gem 'json'
 gem 'minitest'
-gem 'openssl'
 gem 'sinatra'
 gem 'thin'
 gem 'rake'
@@ -18,12 +17,10 @@ gem 'haml'
 gem 'jwt'
 gem 'email_veracity', '~> 0.6.0'
 gem 'rack-ssl-enforcer'
+gem 'tux'
+gem 'hirb'
 gem 'httparty'
 
-group :development do
-  gem 'tux'
-  gem 'hirb'
-end
 
 group :development, :test do
   gem 'sqlite3'
