@@ -179,12 +179,16 @@ class CreditCardService < Sinatra::Base
         'credit_network'    => params[:network]
       }.to_json
 
-      HTTParty.post("#{API_URL_BASE}/api/v1/credit_card", {
+      response = HTTParty.post("#{API_URL_BASE}/api/v1/credit_card", {
         :body     => data,
         :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)}
         })
+      unless respnse.code== 201
+        flash[:notice] = "Invalid Card number"
+        redirect '/store'
+      end
     end
-    flash[:notice] = "The new credit card has been successfully created."
+    flash[:notice] = "Card saved successfully!"
     redirect '/'
 
   end
