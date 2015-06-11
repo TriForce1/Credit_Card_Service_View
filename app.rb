@@ -65,24 +65,6 @@ class CreditCardService < Sinatra::Base
     haml :index
   end
 
-  # get '/api/v1/credit_card/validate/:card_number' do
-  #   c = CreditCard.new(
-  #     number: params[:card_number]
-  #   )
-  #
-  #   # Method to convert string to integer
-  #   # Returns false if string is not only digits
-  #   result = Integer(params[:card_number]) rescue false
-  #
-  #   # Validate for string length and correct type
-  #   if result == false || params[:card_number].length < 2
-  #     return { "Card" => params[:card_number], "validated" => "false" }.to_json
-  #   end
-  #
-  #   {"Card" => params[:card_number], "validated" => c.validate_checksum}.to_json
-  # end
-
-
 
   get '/register' do
     if token = params[:token]
@@ -172,7 +154,8 @@ class CreditCardService < Sinatra::Base
   end
 
   get '/validate/:card_number', :auth => [:user] do
-    url = "#{API_BASE_URI}/credit_card/validate/#{params['card_number']}"
+     num = params['card_number']
+    url = "#{API_BASE_URI}/credit_card/validate/#{num}"
     @card = HTTParty.get (url)
     @cards = JSON.parse(@card)
     haml :validate
@@ -198,7 +181,6 @@ class CreditCardService < Sinatra::Base
     flash[:notice] = "Credit card information sent"
     haml :store
   end
-
 
   get '/user/:username' , :auth => [:user] do
     username = params[:username]
