@@ -2,7 +2,7 @@
 %p
   Click button below to view all credit cards
 %p
-  %form{:action => '/retrieve/all', :method => 'get', :id => 'user-form',class: 'form-horizontal'}
+  %form{:action => '/retrieve', :method => 'get', :id => 'user-form',class: 'form-horizontal'}
     .form-group
       %input{:type => 'submit', :id => 'retrieve-form-submit', :class => 'btn btn-default', :value => 'submit'}
 -if @cards
