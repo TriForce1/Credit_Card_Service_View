@@ -9,4 +9,5 @@
     .form-group
         %input{:type => 'submit', :id => 'validation-form-submit', :class => 'btn btn-default', :value => 'submit'}
 -if @valid
-    = @valid
+    %pre
+      = "Card number '#{@valid.Card}' is validated as '#{validated}'"  
