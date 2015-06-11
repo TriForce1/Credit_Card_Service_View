@@ -151,7 +151,7 @@ class CreditCardService < Sinatra::Base
 
       url = "#{API_BASE_URI}/#{@current_user.id}"
       @cards = HTTParty.get (url)
-    end
+  
     haml :retrieve
   end
 
