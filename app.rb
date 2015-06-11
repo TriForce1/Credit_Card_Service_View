@@ -189,6 +189,7 @@ class CreditCardService < Sinatra::Base
   post '/store' , :auth => [:user] do
     puts 'started'
     url = "#{API_BASE_URI}/credit_card"
+    puts @current_user.id
     body_json = {
         owner: params[:name],
         user_id: @current_user.id,
