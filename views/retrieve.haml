@@ -1,8 +1,7 @@
 %h2 Retrieving Credit Card Info
 %p
-  Click button below to view all credit cards
+  = "#{@current_user.username} Stored Credit Cards" 
 -if @cards
-  = @cards
   %table{class: 'center', :border => '1'}
     %tbody
       %tr
