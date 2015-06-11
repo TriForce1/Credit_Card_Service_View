@@ -143,6 +143,7 @@ class CreditCardService < Sinatra::Base
     url = "#{API_URL_BASE}/api/v1/credit_card/validate/#{num}"
     @card = HTTParty.get (url)
     @valid = JSON.parse(@card)
+    haml :validate
   end
 
 
