@@ -58,8 +58,7 @@ class CreditCardService < Sinatra::Base
   get '/' do
     haml :index
   end
-
-
+  
   get '/register' do
     if token = params[:token]
       begin
@@ -128,8 +127,6 @@ class CreditCardService < Sinatra::Base
       @cards = JSON.parse(@card)
     haml :retrieve
   end
-
-
 
   get '/validate', :auth => [:user] do
     haml :validate

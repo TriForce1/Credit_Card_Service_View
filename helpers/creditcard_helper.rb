@@ -7,7 +7,7 @@ require_relative '../model/user'
 require 'openssl'
 
 module CreditCardHelper
-  API_URL ='https://creditcard-api.herokuapp.com/api/v1'
+  
   class Registration
     attr_accessor :username, :email, :password, :dob, :fullname, :address
 
