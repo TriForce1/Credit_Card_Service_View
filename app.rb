@@ -13,6 +13,8 @@ require 'httparty'
 
 # Credit Card Web Service
 class CreditCardService < Sinatra::Base
+  API_URL_BASE = 'http://creditcard-api.herokuapp.com'
+
   include CreditCardHelper
 
   enable :logging
@@ -183,15 +185,16 @@ class CreditCardService < Sinatra::Base
   # end
 
   get '/retrieve', :auth => [:user] do
-
+    result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card/#{@current_user.id}")
+    @cards = result.parsed_response
     haml :retrieve
   end
 
-  get '/retrieve/all' do
-    # status, headers, body = call env.merge("PATH_INFO" => '/api/v1/get')
-    # @cards = JSON.parse(body[0])
-    haml :retrieve
-  end
+  # get '/retrieve/all' do
+  #   # status, headers, body = call env.merge("PATH_INFO" => '/api/v1/get')
+  #   # @cards = JSON.parse(body[0])
+  #   haml :retrieve
+  # end
 
   get '/validate', :auth => [:user] do
     # @validate = params[:card_number]
@@ -225,7 +228,7 @@ class CreditCardService < Sinatra::Base
       'credit_network'    => params[:network]
     }.to_json
 
-    HTTParty.post("http://localhost:9292/api/v1/credit_card", {
+    HTTParty.post("#{API_URL_BASE}/api/v1/credit_card", {
       :body     => data,
       :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json'}
       })
