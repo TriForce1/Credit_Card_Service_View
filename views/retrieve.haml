@@ -2,8 +2,23 @@
 %p
   Click button below to view all credit cards
 %p
-  %form{:action => '/retrieve', :method => 'get', :id => 'user-form',class: 'form-horizontal'}
-    .form-group
-      %input{:type => 'submit', :id => 'retrieve-form-submit', :class => 'btn btn-default', :value => 'submit'}
 -if @cards
   = @cards
+  %table{class: 'center', :border => '1'}
+    %caption Team pay for #{@teamname}
+      %tbody
+        %tr
+          %th Owner's Name
+          %th Expiration Date
+          %th Number
+          %th Credit Card Network
+        -@cards.each do |card|
+          %tr
+            %td
+              = card['owner']
+            %td
+              = card['expiration_date']
+            %td
+              = card['encrypted_number']
+            %td
+              = card['credit_network']
