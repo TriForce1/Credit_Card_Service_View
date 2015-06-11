@@ -52,6 +52,7 @@ class CreditCardService < Sinatra::Base
     end
   end
 
+
   before do
     @current_user = session[:auth_token] ? find_user_by_token(session[:auth_token]) : nil
   end
@@ -115,6 +116,8 @@ class CreditCardService < Sinatra::Base
     haml :login
   end
 
+
+
   post '/login' do
     username = params[:username]
     password = params[:password]
@@ -167,19 +170,20 @@ class CreditCardService < Sinatra::Base
   end
 
   post '/store' do
-    data = {
-      'user_id'           => @current_user.id,
-      'number'            => params[:card_number],
-      'expiration_date'   => params[:expiration],
-      'owner'             => params[:name],
-      'credit_network'    => params[:network]
-    }.to_json
+    begin
+      data = {
+        'user_id'           => @current_user.id,
+        'number'            => params[:card_number],
+        'expiration_date'   => params[:expiration],
+        'owner'             => params[:name],
+        'credit_network'    => params[:network]
+      }.to_json
 
-    HTTParty.post("#{API_URL_BASE}/api/v1/credit_card", {
-      :body     => data,
-      :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)}
-      })
-
+      HTTParty.post("#{API_URL_BASE}/api/v1/credit_card", {
+        :body     => data,
+        :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)}
+        })
+    end
     flash[:notice] = "The new credit card has been successfully created."
     redirect '/'
 
