@@ -15,9 +15,9 @@ module CreditCardHelper
       @username = user_hash['username'] || user_hash[:username]
       @email = user_hash['email'] || user_hash[:email]
       @password = user_hash['password'] || user_hash[:password]
-      # @fullname = user_hash['fullname'] || user_hash[:fullname]
-      # @dob = user_hash['dob'] || user_hash[:dob]
-      # @address = user_hash['address'] || user_hash[:address]
+      @fullname = user_hash['fullname'] || user_hash[:fullname]
+      @dob = user_hash['dob'] || user_hash[:dob]
+      @address = user_hash['address'] || user_hash[:address]
     end
 
     def complete?
@@ -104,7 +104,7 @@ module CreditCardHelper
 
   def create_account_with_registration(registration)
     new_user = User.new(username: registration.username, email: registration.email)
-    new_user.password =  registration.password.to_s
+    new_user.password =  registration.password
     new_user.fullname = new_user.attribute_encrypt(registration.fullname)
     new_user.dob = new_user.attribute_encrypt(registration.dob)
     new_user.address = new_user.attribute_encrypt(registration.address)
@@ -114,7 +114,7 @@ module CreditCardHelper
   def create_account_with_git_registration(registration)
     new_user = User.new(username: registration.username, email: registration.email)
     new_user.password =  registration.password
-    new_user.save ? login_user(new_user) : fail('Could not create new user')
+    new_user.save! ? login_user(new_user) : fail('Could not create new user')
   end
 
   def create_user_with_encrypted_token(token_enc)
