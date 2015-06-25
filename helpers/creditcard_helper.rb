@@ -15,9 +15,9 @@ module CreditCardHelper
       @username = user_hash['username'] || user_hash[:username]
       @email = user_hash['email'] || user_hash[:email]
       @password = user_hash['password'] || user_hash[:password]
-      @fullname = user_hash['fullname'] || user_hash[:fullname]
-      @dob = user_hash['dob'] || user_hash[:dob]
-      @address = user_hash['address'] || user_hash[:address]
+      # @fullname = user_hash['fullname'] || user_hash[:fullname]
+      # @dob = user_hash['dob'] || user_hash[:dob]
+      # @address = user_hash['address'] || user_hash[:address]
     end
 
     def complete?
