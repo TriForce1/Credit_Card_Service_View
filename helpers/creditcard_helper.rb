@@ -111,7 +111,7 @@ module CreditCardHelper
   end
 
   def create_account_with_git_registration(registration)
-    new_user = User.new(username: registration.username.to_, email: registration.email.to_s)
+    new_user = User.new(username: registration.username.to_s, email: registration.email.to_s)
     new_user.password =  registration.password.to_s
     new_user.save ? login_user(new_user) : fail('Could not create new user')
   end
