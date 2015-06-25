@@ -149,7 +149,7 @@ class CreditCardService < Sinatra::Base
     haml :validate
   end
 
-  get 'callback' do
+  get '/callback' do
     gh = HTTParty.post('https://github.com/login/oauth/access_token',
                         body: {client_id: ENV['GH_CLIENT_ID'],
                                cient_secret: ENV['GH_CLIENT_SECRET'],
