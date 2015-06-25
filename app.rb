@@ -152,7 +152,7 @@ class CreditCardService < Sinatra::Base
   get '/callback' do
     gh = HTTParty.post('https://github.com/login/oauth/access_token',
                         body: {client_id: ENV['GH_CLIENT_ID'],
-                               cient_secret: ENV['GH_CLIENT_SECRET'],
+                               client_secret: ENV['GH_CLIENT_SECRET'],
                                code: params['code']},
                         headers: {'Accept' => 'application/json'})
     gh_user = HTTParty.get(
