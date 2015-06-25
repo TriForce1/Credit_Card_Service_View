@@ -48,7 +48,7 @@ module CreditCardHelper
 
   def create_gh_user(username, email, token)
     reg = Registration.new({'username'=> username, 'email' => email, 'password' => token})
-    create_account_with_registration(reg)
+    create_account_with_git_registration(reg)
   end
 
   def find_user_by_token(token)
@@ -103,11 +103,17 @@ module CreditCardHelper
 
   def create_account_with_registration(registration)
     new_user = User.new(username: registration.username, email: registration.email)
-    new_user.password =  registration.password
+    new_user.password =  registration.password.to_s
     new_user.fullname = new_user.attribute_encrypt(registration.fullname)
     new_user.dob = new_user.attribute_encrypt(registration.dob)
     new_user.address = new_user.attribute_encrypt(registration.address)
     new_user.save! ? login_user(new_user) : fail('Could not create a new user')
+  end
+
+  def create_account_with_git_registration(registration)
+    new_user = User.new(username: registration.username.to_, email: registration.email.to_s)
+    new_user.password =  registration.password.to_s
+    new_user.save ? login_user(new_user) : fail('Could not create new user')
   end
 
   def create_user_with_encrypted_token(token_enc)
