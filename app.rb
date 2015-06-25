@@ -156,7 +156,7 @@ class CreditCardService < Sinatra::Base
                                code: params['code']},
                         headers: {'Accept' => 'application/json'})
     gh_user = HTTParty.get(
-              'https://api.github.com/user'
+              'https://api.github.com/user',
               body: {params: {access_token: gh['access_token']}},
               headers: {'User-Agent' => 'Credit Card Service',
                         'Authorization' => "token #{gh['access_token']}"})
