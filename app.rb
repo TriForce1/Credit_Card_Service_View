@@ -158,8 +158,8 @@ class CreditCardService < Sinatra::Base
     gh_user = HTTParty.get(
               'https://api.github.com/user'
               body: {params: {access_token: gh['access_token']}},
-              headers: {'User-Agent' => 'Credit Card Service'}
-                        'Authorization' => "token #{gh['access_token']}")
+              headers: {'User-Agent' => 'Credit Card Service',
+                        'Authorization' => "token #{gh['access_token']}"})
     username = gh_user['login']
     email = gh_user['email']
     if user = find_user_by_username(username)
