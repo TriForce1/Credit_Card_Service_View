@@ -33,7 +33,7 @@ module CreditCardHelper
 
 
   def user_jwt
-    jwt_payload = {'iss' => 'https://creditcardservice.herokuapp.com',
+    jwt_payload = {'iss' => 'https://creditcardserviceapp.herokuapp.com',
                     'sub' => @current_user.id }
     jwt_key = OpenSSL::PKey::RSA.new(Base64.urlsafe_decode64(ENV['UI_PRIVATE_KEY']))
     JWT.encode jwt_payload, jwt_key, 'RS256'
