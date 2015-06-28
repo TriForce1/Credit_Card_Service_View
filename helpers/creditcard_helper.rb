@@ -7,7 +7,7 @@ require_relative '../model/user'
 require 'openssl'
 
 module CreditCardHelper
-  
+
   class Registration
     attr_accessor :username, :email, :password, :dob, :fullname, :address
 
@@ -46,11 +46,20 @@ module CreditCardHelper
     redirect '/'
   end
 
+  def create_gh_user(username, email, token)
+    reg = Registration.new({'username' => username, 'email' => email, 'password' => token})
+    create_account_with_git_registration(reg)
+  end
+
   def find_user_by_token(token)
     return nil unless token
     decoded_token = JWT.decode token, ENV['MSG_KEY'], true
     payload = decoded_token.first
     User.find_by_id(payload['user_id'])
+  end
+
+  def find_user_by_username(username)
+    User.find_by_username(username)
   end
 
   def email_registration_verification(registration)
@@ -98,6 +107,12 @@ module CreditCardHelper
     new_user.fullname = new_user.attribute_encrypt(registration.fullname)
     new_user.dob = new_user.attribute_encrypt(registration.dob)
     new_user.address = new_user.attribute_encrypt(registration.address)
+    new_user.save! ? login_user(new_user) : fail('Could not create a new user')
+  end
+
+  def create_account_with_git_registration(registration)
+    new_user = User.new(username: registration.username, email: registration.email)
+    new_user.password =  registration.password
     new_user.save! ? login_user(new_user) : fail('Could not create a new user')
   end
 
