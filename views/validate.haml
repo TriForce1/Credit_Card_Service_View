@@ -1,5 +1,5 @@
 %h2 Validate Your Credit Card
-%form{:action => '/validate/card', :method => 'get', :id => 'validate-form', class: 'form-horizontal'}
+%form{:action => '/validate', :method => 'post', :id => 'validate-form', class: 'form-horizontal'}
   .form-group
     %dl
       %dt
@@ -10,4 +10,4 @@
     %input{:type => 'submit', :id => 'validation-form-submit', :class => 'btn btn-default', :value => 'submit'}
 -if @valid
   %pre
-    = "Card number #{@valid['Card']} is validated as #{@valid['validated']}"  
+    = "Card number #{@valid['Card']} is validated as #{@valid['validated']}"
