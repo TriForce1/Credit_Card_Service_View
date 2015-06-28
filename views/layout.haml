@@ -9,22 +9,22 @@
     %nav{class: 'navbar navbar-default' }
       .container-fluid
         .navbar-header
-          %a{href: '/', class: 'navbar-brand'}
+          %a{href: '/', class: 'navbar-brand', style: "color:black;"}
             %strong CreditCard
-        %div{class: 'collapse navbar-collapse'}
-          %ul.nav.navbar-nav.navbar-right
+        %div{class: 'collapse navbar-collapse', style: "color:black;"}
+          %ul.nav.navbar-nav.navbar-right{style: "color:black;"}
             - if @current_user
               %li{class: 'navbar-brand', style: "color:black;"}
                 = " Welcome #{@current_user.username}, "
               %li
-                %a{href: '/logout' ,style: "text-decoration: underline;"} Logout?
+                %a{href: '/logout' ,style: "text-decoration: underline;", style: "color:black;"} Logout?
               %li
-                %a{href: "/user/#{@current_user.username}"} Profile
+                %a{href: "/user/#{@current_user.username}", style: "color:black;"} Profile
             - else
               %li
-                %a{href: '/login'} Login
+                %a{href: '/login', style: "color:black;"} Login
               %li
-                %a{href: '/register'} Register
+                %a{href: '/register', style: "color:black;"} Register
 
     .container
       .page-header
