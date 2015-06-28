@@ -207,7 +207,7 @@ class CreditCardService < Sinatra::Base
         :body     => data,
         :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)}
         })
-      unless response.code == 200
+      unless response.code == 201
         flash[:error] = "Invalid Card number"
         redirect '/store'
       end
