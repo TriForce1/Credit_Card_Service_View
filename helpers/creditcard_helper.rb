@@ -33,7 +33,7 @@ module CreditCardHelper
 
 
   def user_jwt
-    jwt_payload = {'iss' => 'http://creditcardservice.herokuapp.com',
+    jwt_payload = {'iss' => 'https://creditcardserviceapp.herokuapp.com',
                     'sub' => @current_user.id }
     jwt_key = OpenSSL::PKey::RSA.new(Base64.urlsafe_decode64(ENV['UI_PRIVATE_KEY']))
     JWT.encode jwt_payload, jwt_key, 'RS256'
@@ -47,7 +47,8 @@ module CreditCardHelper
   end
 
   def create_gh_user(username, email, token)
-    reg = Registration.new({'username' => username, 'email' => email, 'password' => token})
+
+    reg = Registration.new({'username'=> username, 'email' => email, 'password' => token})
     create_account_with_git_registration(reg)
   end
 
@@ -113,7 +114,7 @@ module CreditCardHelper
   def create_account_with_git_registration(registration)
     new_user = User.new(username: registration.username, email: registration.email)
     new_user.password =  registration.password
-    new_user.save! ? login_user(new_user) : fail('Could not create a new user')
+    new_user.save! ? login_user(new_user) : fail('Could not create new user')
   end
 
   def create_user_with_encrypted_token(token_enc)

@@ -46,7 +46,7 @@ class CreditCardService < Sinatra::Base
       condition do
         if (types.include? :user) && !@current_user
           flash[:error] = "You must be logged in to access this page"
-          redirect "/login"
+          redirect '/'
         end
       end
     end
@@ -62,7 +62,7 @@ class CreditCardService < Sinatra::Base
       condition do
         if (types.include? :user) && !@current_user
           flash[:error] = 'You must be logged in for that page'
-          redirect '/login'
+          redirect '/'
         end
       end
     end
@@ -91,16 +91,16 @@ class CreditCardService < Sinatra::Base
     registration = Registration.new(params)
     if (registration.complete?) != true
       flash[:error]= "Please fill in ALL fields."
-      redirect '/register'
+      redirect '/'
     elsif (params[:password] == params[:password_confirm]) != true
       flash[:error]= "Please ensure that the passwords are the SAME."
-      redirect '/register'
+      redirect '/'
     elsif EmailVeracity::Address.new(params[:email]).valid? != true
       flash[:error]= "Please enter a valid email address."
-      redirect '/register'
+      redirect '/'
     elsif user_available(params[:username]) != nil
       flash[:error]= "This username is not available."
-      redirect '/register'
+      redirect '/'
     else
       begin
         email_registration_verification(registration)
@@ -126,7 +126,7 @@ class CreditCardService < Sinatra::Base
       login_user(user)
     else
       flash[:error] = "Incorrect username or password!"
-      redirect('/login')
+      redirect('/')
     end
   end
 
@@ -141,22 +141,46 @@ class CreditCardService < Sinatra::Base
     haml :validate
   end
 
-  get '/validate/card', :auth => [:user] do
+  post '/validate', :auth => [:user] do
     num = params['card_number']
-    url = "#{API_URL_BASE}/api/v1/credit_card/validate/#{num}"
-    @card = HTTParty.get (url)
-    @valid = JSON.parse(@card)
+    url = "#{API_URL_BASE}/api/v1/credit_card/validate?card_number=#{num}"
+    @card = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card/validate?card_number=#{num}", headers: {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)})
+    @valid = @card.parsed_response
     haml :validate
   end
 
+  get '/callback' do
+    gh = HTTParty.post('https://github.com/login/oauth/access_token',
+                        body: {client_id: ENV['GH_CLIENT_ID'],
+                               client_secret: ENV['GH_CLIENT_SECRET'],
+                               code: params['code']},
+                        headers: {'Accept' => 'application/json'})
+    gh_user = HTTParty.get(
+              'https://api.github.com/user',
+              body: {params: {access_token: gh['access_token']}},
+              headers: {'User-Agent' => 'Credit Card Service',
+                        'Authorization' => "token #{gh['access_token']}"})
+    username = gh_user['login']
+    email = gh_user['email']
+    if user = find_user_by_username(username)
+      login_user(user)
+    else
+      create_gh_user(username, email, gh['access_token'])
+    end
+    redirect '/'
+  end
+
+
 
   get '/retrieve', :auth => [:user] do
-    result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card/#{@current_user.id}")
+    result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
+    :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)
+    })
     @cards = result.parsed_response
     haml :retrieve
   end
 
-  get '/user/:username' , :auth => [:user] do
+  get '/user' , :auth => [:user] do
     username = params[:username]
     unless username == @current_user.username
       flash[:error] = "You may only look at your own profile"
@@ -179,7 +203,7 @@ class CreditCardService < Sinatra::Base
         'credit_network'    => params[:network]
       }.to_json
 
-      response = HTTParty.post("#{API_URL_BASE}/api/v1/credit_card", {
+      response = HTTParty.post("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}", {
         :body     => data,
         :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)}
         })
