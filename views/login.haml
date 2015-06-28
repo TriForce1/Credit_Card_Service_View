@@ -19,4 +19,4 @@
         %input{:type => 'submit', :id => 'login-form-submit', :class => 'btn btn-default', :value => 'submit'}
 %dl
     %dt
-        %a{:href => "https://github.com/login/oauth/authorize?client_id=#{ENV['GH_CLIENT_ID']}&scope=user:email"}Sign In With Git Hub Account
+        %a{:href => "https://github.com/login/oauth/authorize?client_id#{ENV['GH_CLIENT_ID']}&scope=user:email"} Sign In With Git Hub Account
