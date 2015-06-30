@@ -4,15 +4,27 @@
 config_env :development, :test do
   set 'DB_KEY', "[database encryption key in base64 url safe encoding]"
   set 'MSG_KEY', "[ JWT encryption key in base64 url safe encoding]"
+
+  set 'MEMCACHIER_SERVERS', 'Memcachier Servers'
+  set 'MEMCACHIER_USERNAME', 'Memcachier Username'
+  set 'MEMCACHIER_PASSWORD', 'Memcachier Password'
 end
 
 config_env :production do
   set 'DB_KEY', "[database encryption key in base64 url safe encoding]"
   set 'MSG_KEY', "[database encryption key in base64 url safe encoding]"
+
+  set 'MEMCACHIER_SERVERS', 'Memcachier Servers'
+  set 'MEMCACHIER_USERNAME', 'Memcachier Username'
+  set 'MEMCACHIER_PASSWORD', 'Memcachier Password'
 end
 
 config_env do
   set 'SENDGRID_DOMAIN', "[domain setup for Sendgrid service]"
   set 'SENDGRID_USERNAME', "[username setup for Sendgrid service]"
   set 'SENDGRID_PASSWORD', "[password setup for Sendgrid service]"
+
+  set 'UI_PRIVATE_KEY', "..."
+  set 'UI_PUBLIC_KEY', "..."
+  set 'API_PUBLIC_KEY', "..."
 end
