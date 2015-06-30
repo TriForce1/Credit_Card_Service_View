@@ -31,7 +31,7 @@ module CreditCardHelper
     end
   end
 
-  def api_card_index
+  def api_card_index(API_URL_BASE)
     HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
     :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)
     })
