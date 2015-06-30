@@ -5,6 +5,9 @@ require 'pony'
 require 'base64'
 require_relative '../model/user'
 require 'openssl'
+require 'httparty'
+require 'json'
+
 
 module CreditCardHelper
   API_URL_BASE = 'https://credit-card-service-api.herokuapp.com'
