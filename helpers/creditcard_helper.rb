@@ -37,7 +37,7 @@ module CreditCardHelper
   def api_card_index
     JSON.parse(HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
     :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)
-    })))
+    }))
     # url = API_URL+'operation'
     # headers = {'authorization' => ('Bearer ' + user_jwt)}
     # HTTParty.get url, headers: headers
