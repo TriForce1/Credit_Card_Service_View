@@ -1,5 +1,5 @@
 %h2 Retrieved Credit Card Info
-%p
+%p{Class: 'hlist'}
   = "#{@current_user.username}'s Stored Credit Cards"
 -if @cards
   %table{class: 'over table', :border => '1'}
@@ -12,13 +12,13 @@
         %th{class: 'rows'} Date Created
       -@cards.each do |card|
         %tr
-          %td{class: 'rows'}
+          %td{class: 'r'}
             = card['owner']
-          %td{class: 'rows'}
-            = card['expiration_date']
-          %td{class: 'rows'}
-            = card['encrypted_number']
-          %td{class: 'rows'}
-            = card['credit_network']
-          %td{class: 'rows'}
-            = card['created_at']
+          %td{class: 'r'}
+            = card['expiration']
+          %td{class: 'r'}
+            = card['number']
+          %td{class: 'r'}
+            = card['network']
+          %td{class: 'r'}
+            = card['date']

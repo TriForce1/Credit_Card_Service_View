@@ -5,9 +5,12 @@ require 'pony'
 require 'base64'
 require_relative '../model/user'
 require 'openssl'
+require 'httparty'
+require 'json'
+
 
 module CreditCardHelper
-
+  API_URL_BASE = 'https://credit-card-service-api.herokuapp.com'
   class Registration
     attr_accessor :username, :email, :password, :dob, :fullname, :address
 
@@ -29,6 +32,15 @@ module CreditCardHelper
       (dob && dob.length > 0) &&
       (fullname && fullname.length > 0)
     end
+  end
+
+  def api_card_index
+    HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
+    :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)
+    })
+    # url = API_URL+'operation'
+    # headers = {'authorization' => ('Bearer ' + user_jwt)}
+    # HTTParty.get url, headers: headers
   end
 
 

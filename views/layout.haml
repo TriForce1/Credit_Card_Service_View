@@ -17,22 +17,24 @@
             %strong CreditCard
         %div{class: 'collapse navbar-collapse', style: "color:black;"}
           %ul.nav.navbar-nav.navbar-right{style: "color:black;"}
+
+            - if @current_user
+              %li{class: 'navbar-brand', style: "color:black;"}
+                = " Welcome #{@current_user.username}, "
+              %li
+                %a{href: "/user?username=#{@current_user.username}", style: "color:black;"} PROFILE
+              %li
+                %a{href: '/logout' ,style: "text-decoration: underline;", style: "color:black;"} Logout?
+
+            - else
+              %li
+                %a{:href => "#modal", :id =>'modal_trigger', style: "color:black;"} Login or Register
             %li
               %a{href: '/about', style: "color:black;"} ABOUT
             %li
               %a{href: '/help', style: "color:black;"} HELP
             %li
               %a{href: '/contact', style: "color:black;"} CONTACT US
-            - if @current_user
-              %li{class: 'navbar-brand', style: "color:black;"}
-                = " Welcome #{@current_user.username}, "
-              %li
-                %a{href: '/logout' ,style: "text-decoration: underline;", style: "color:black;"} Logout?
-              %li
-                %a{href: "/user?username=#{@current_user.username}"} Profile
-            - else
-              %li
-                %a{:href => "#modal", :id =>'modal_trigger', style: "color:black;"} Login or Register
 
 
 
@@ -41,7 +43,7 @@
         %h1
           %strong Welcome to Credit Card Service
     .container
-      #modal.popupContainer{:style => "display:none;"}
+      #modal.popupContainer{:style => "display:none;", :tabindex => "-1","data-replace" => "true"}
         %header.popupHeader
           %span.header_title Login
           %span.modal_close
@@ -113,7 +115,12 @@
                 .one_half.last
                   %input.btn.btn_red{:type => 'submit', :class =>'btn2', :class =>'btn_red2', :value => 'Register'}
       :javascript
-        $("#modal_trigger").leanModal({top : 100, overlay : 0.6, closeButton: ".modal_close" });
+        $('#modal').on('show.bs.modal', function () {
+        $('.modal .modal-body').css('overflow-y', 'auto');
+        $('.modal .modal-body').css('max-height', $(window).height() * 0.7);
+        });
+
+        $("#modal_trigger").leanModal({top : 60, overlay : 0.6, closeButton: ".modal_close" });
 
         $(function(){
         	// Calling Login Form
@@ -139,8 +146,8 @@
         		$(".header_title").text('Login');
         		return false;
         	});
-
         })
+
 
       = haml :flash_bar
       = yield
