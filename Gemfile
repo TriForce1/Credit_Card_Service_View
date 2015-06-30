@@ -20,6 +20,9 @@ gem 'rack-ssl-enforcer'
 gem 'tux'
 gem 'hirb'
 gem 'httparty'
+gem 'dalli'
+gem 'activesupport'
+gem 'rdiscount'
 
 
 group :development, :test do

@@ -31,6 +31,15 @@ module CreditCardHelper
     end
   end
 
+  def api_card_index
+    HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
+    :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)
+    })
+    # url = API_URL+'operation'
+    # headers = {'authorization' => ('Bearer ' + user_jwt)}
+    # HTTParty.get url, headers: headers
+  end
+
 
   def user_jwt
     jwt_payload = {'iss' => 'https://creditcardserviceapp.herokuapp.com',

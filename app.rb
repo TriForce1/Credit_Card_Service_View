@@ -14,6 +14,9 @@ require 'jwt'
 require 'rbnacl/libsodium'
 require 'openssl'
 require 'hirb'
+require 'dalli'
+require 'active_support'
+require 'active_support/core_ext'
 
 
 
@@ -30,6 +33,13 @@ class CreditCardService < Sinatra::Base
     use Rack::Session::Cookie, secret: ENV['MSG_KEY']
     use Rack::Flash, sweep: true
     Hirb.enable
+
+    set :cards_cache, Dalli::Client.new((ENV['MEMCACHIER_SERVERS'] || "").split(','), {
+      :username => ENV['MEMCACHIER_USERNAME'],
+      :password => ENV['MEMCACHIER_PASSWORD'],
+      :socket_timeout => 1.5,
+      :socket_failure_delay => 0.2
+      })
   end
 
   configure :development, :test do
@@ -173,10 +183,16 @@ class CreditCardService < Sinatra::Base
 
 
   get '/retrieve', :auth => [:user] do
-    result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
-    :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)
-    })
-    @cards = result.parsed_response
+
+    @cards = if @current_user
+      JSON.parse( settings.cards_cache.fetch(@current_user.id) { api_card_index.to_json } )
+    else
+      nil
+    end
+    # result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
+    # :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)
+    # })
+    # @cards = result.parsed_response
     haml :retrieve
   end
 
