@@ -13,12 +13,12 @@
       -@cards.each do |card|
         %tr
           %td
-            = card['owner']
+            = card[0]['owner']
           %td
-            = card['expiration']
+            = card[0]['expiration']
           %td
-            = card['number']
+            = card[0]['number']
           %td
-            = card['network']
+            = card[0]['network']
           %td
-            = card['date']
+            = card[0]['date']

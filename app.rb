@@ -188,10 +188,12 @@ class CreditCardService < Sinatra::Base
 
     @cards = if @current_user
       JSON.parse( settings.cards_cache.fetch(@current_user.id) { api_card_index.json } )
-
     else
       nil
     end
+
+    puts @cards
+    puts @cards.class
     # result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
     # :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)
     # })
