@@ -19,6 +19,7 @@ GEM
     builder (3.2.2)
     config_env (0.1.0)
     daemons (1.2.2)
+    dalli (2.7.4)
     email_veracity (0.6.0)
     eventmachine (1.0.7)
     ffi (1.9.8)
@@ -89,7 +90,9 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  activesupport
   config_env
+  dalli
   email_veracity (~> 0.6.0)
   haml
   hirb
@@ -111,6 +114,3 @@ DEPENDENCIES
   sqlite3
   thin
   tux
-
-BUNDLED WITH
-   1.10.3

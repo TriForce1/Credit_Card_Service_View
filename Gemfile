@@ -20,7 +20,8 @@ gem 'rack-ssl-enforcer'
 gem 'tux'
 gem 'hirb'
 gem 'httparty'
-
+gem 'dalli'
+gem 'activesupport'
 
 group :development, :test do
   gem 'sqlite3'

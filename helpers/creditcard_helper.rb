@@ -31,6 +31,7 @@ module CreditCardHelper
     end
   end
 
+  API_URL = 'http://localhost:8080/'
 
   def user_jwt
     jwt_payload = {'iss' => 'http://creditcardserviceapp.herokuapp.com',
@@ -110,5 +111,11 @@ module CreditCardHelper
 
   def user_available(user)
     User.find_by_username(user)
+  end
+
+  def api_creditcatds_index
+    url = API_URL + "credit_card/#{@current_user.id}"
+    headers = {'authorization' => ('Bearer ' + user_jwt)}
+    HTTParty.get url, headers: headers
   end
 end
