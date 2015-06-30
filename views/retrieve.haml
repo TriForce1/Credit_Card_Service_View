@@ -2,23 +2,22 @@
 %p
   = "#{@current_user.username}'s Stored Credit Cards"
 -if @cards
-  %table{class: 'center', :border => '1'}
+  %table{class: 'over table', :border => '1'}
     %tbody
-      %tr
-        %th Owner's Name
-        %th Expiration Date
-        %th Number
-        %th Credit Card Network
-        %th Date Created
+      %tr{class: 'rows'}
+        %th{class: 'rows'} Owner's Name
+        %th{class: 'rows'} Expiration Date
+        %th{class: 'rows'} Number
+        %th{class: 'rows'} Credit Card Network
+        %th{class: 'rows'} Date Created
       -@cards.each do |card|
         %tr
-          %td
+          %td{class: 'rows'}
             = card['owner']
-          %td
+          %td{class: 'rows'}
             = card['expiration']
-          %td
+          %td{class: 'rows'}
             = card['number']
-          %td
+          %td{class: 'rows'}
             = card['network']
-          %td
-            = card['date']
+          %td{class: 'rows'}
