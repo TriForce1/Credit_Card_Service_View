@@ -192,16 +192,15 @@ class CreditCardService < Sinatra::Base
         nil
       end
     rescue
-      flash[:error] = "This person has no stored creditcards"
+      flash[:error] = "TYou have no stored creditcards as yet"
       redirect '/'
     end
-      @cards = @cards['cards']
-      puts @cards
-      puts @cards.class
-    # result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
-    # :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)
-    # })
-    # @cards = result.parsed_response
+      if @cards.nil? ||cards.empty?
+        flash[:error] = "TYou have no stored creditcards as yet"
+        redirect '/'
+      end
+      @cards = @cards['cards']    
+
     haml :retrieve
   end
 
