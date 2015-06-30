@@ -17,22 +17,24 @@
             %strong CreditCard
         %div{class: 'collapse navbar-collapse', style: "color:black;"}
           %ul.nav.navbar-nav.navbar-right{style: "color:black;"}
+
+            - if @current_user
+              %li{class: 'navbar-brand', style: "color:black;"}
+                = " Welcome #{@current_user.username}, "
+              %li
+                %a{href: "/user?username=#{@current_user.username}"} Profile
+              %li
+                %a{href: '/logout' ,style: "text-decoration: underline;", style: "color:black;"} Logout?
+
+            - else
+              %li
+                %a{:href => "#modal", :id =>'modal_trigger', style: "color:black;"} Login or Register
             %li
               %a{href: '/about', style: "color:black;"} ABOUT
             %li
               %a{href: '/help', style: "color:black;"} HELP
             %li
               %a{href: '/contact', style: "color:black;"} CONTACT US
-            - if @current_user
-              %li{class: 'navbar-brand', style: "color:black;"}
-                = " Welcome #{@current_user.username}, "
-              %li
-                %a{href: '/logout' ,style: "text-decoration: underline;", style: "color:black;"} Logout?
-              %li
-                %a{href: "/user?username=#{@current_user.username}"} Profile
-            - else
-              %li
-                %a{:href => "#modal", :id =>'modal_trigger', style: "color:black;"} Login or Register
 
 
 
