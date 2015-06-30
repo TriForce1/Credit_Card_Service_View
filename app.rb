@@ -23,9 +23,11 @@ require 'active_support/core_ext'
 # Credit Card Web Service
 class CreditCardService < Sinatra::Base
   # API_URL_BASE = 'http://creditcard-api.herokuapp.com'
+  include CreditCardHelper
+
   API_URL_BASE = 'https://credit-card-service-api.herokuapp.com'
 
-  include CreditCardHelper
+
 
   enable :logging
 
