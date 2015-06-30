@@ -191,6 +191,7 @@ class CreditCardService < Sinatra::Base
     else
       nil
     end
+    puts @cards
     @cards = @cards['cards']
     puts @cards
     puts @cards.class
