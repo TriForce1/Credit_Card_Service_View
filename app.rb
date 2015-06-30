@@ -191,7 +191,7 @@ class CreditCardService < Sinatra::Base
     else
       nil
     end
-
+    @card = @cards['cards']
     puts @cards
     puts @cards.class
     # result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
