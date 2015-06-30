@@ -187,7 +187,7 @@ class CreditCardService < Sinatra::Base
   get '/retrieve', :auth => [:user] do
 
     @cards = if @current_user
-      JSON.parse( settings.cards_cache.fetch(@current_user.id) { api_card_index.to_json } )
+      JSON.parse( settings.cards_cache.fetch(@current_user.id) { api_card_index } )
     else
       nil
     end
