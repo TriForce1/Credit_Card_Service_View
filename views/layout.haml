@@ -35,7 +35,7 @@
         %h1
           %strong Welcome to Credit Card Service
     .container
-      #modal.popupContainer{:style => "display:none;"}
+      #modal.popupContainer{:style => "display:none;", :tabindex => "-1","data-replace" => "true"}
         %header.popupHeader
           %span.header_title Login
           %span.modal_close
@@ -107,7 +107,7 @@
                 .one_half.last
                   %input.btn.btn_red{:type => 'submit', :class =>'btn2', :class =>'btn_red2', :value => 'Register'}
       :javascript
-        $("#modal_trigger").leanModal({top : 100, overlay : 0.6, closeButton: ".modal_close" });
+        $("#modal_trigger").leanModal({top : 60, overlay : 0.6, closeButton: ".modal_close" });
 
         $(function(){
         	// Calling Login Form
@@ -133,6 +133,7 @@
         		$(".header_title").text('Login');
         		return false;
         	});
+
 
         })
 
