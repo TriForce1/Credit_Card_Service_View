@@ -192,14 +192,13 @@ class CreditCardService < Sinatra::Base
         nil
       end
     rescue
-      flash[:error] = "TYou have no stored creditcards as yet"
+      flash[:error] = "You have no stored credit cards as yet"
       redirect '/'
     end
-      if @cards.nil? || @cards.empty?
-        flash[:error] = "TYou have no stored creditcards as yet"
+      if @cards['cards'].nil? || @cards['cards'].empty?
+        flash[:error] = "You have no stored credit cards as yet"
         redirect '/'
-      end
-      puts @cards
+      end      
       @cards = @cards['cards']
 
     haml :retrieve
