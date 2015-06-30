@@ -185,15 +185,19 @@ class CreditCardService < Sinatra::Base
 
 
   get '/retrieve', :auth => [:user] do
-
-    @cards = if @current_user
-      JSON.parse( settings.cards_cache.fetch(@current_user.id) { api_card_index } )
-    else
-      nil
+    begin
+      @cards = if @current_user
+        JSON.parse( settings.cards_cache.fetch(@current_user.id) { api_card_index.json } )
+      else
+        nil
+      end
+    rescue
+      flash[:error] = "This person has no stored creditcards"
+      redirect '/'
     end
-    @cards = @cards['cards']
-    puts @cards
-    puts @cards.class
+      @cards = @cards['cards']
+      puts @cards
+      puts @cards.class
     # result = HTTParty.get("#{API_URL_BASE}/api/v1/credit_card?user_id=#{@current_user.id}",
     # :headers  => {'Content-Type' => 'application/json', 'Accept' => 'application/json', 'authorization' => ('Bearer ' + user_jwt)
     # })
